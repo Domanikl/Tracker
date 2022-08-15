@@ -1,15 +1,18 @@
-
-
-import React from 'react';
+import React, {useState} from 'react';
 import type {Node} from 'react';
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   useColorScheme,
   View,
+  Alert,
+  FlatList,
+  TouchableHighlightBase
 } from 'react-native';
 
 import {
@@ -20,8 +23,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
+const Section = ({arrData}): Node => {
   return (
     <View style={styles.sectionContainer}>
       <Text
@@ -31,54 +33,44 @@ const Section = ({children, title}): Node => {
             color: isDarkMode ? Colors.white : Colors.black,
           },
         ]}>
-        {title}
+        {arrData}
       </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+  
     </View>
   );
 };
 
 const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+ 
+   const [text, setText] = useState("")
+   const [arrData, setArr] = useState([
+    'This is first One'
+   ])
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+    const addTask = (text) => {
+      setArr(prevState => [...prevState, text ])
+    }
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step Two">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+    <SafeAreaView>
+      <ScrollView>
+        <View>
+          <Text style={styles.sectionTitle}> This is your Tracker! </Text>
         </View>
+        <Text
+          style={
+            (styles.sectionDescription,
+            {paddingTop: 28, textAlign: 'center', color: 'black'})
+          }>
+          Enter your task:
+        </Text>
+        <TextInput style={styles.input} onChangeText={setText} value={text} />
+        <Button title="Click Me!" color="#841584" style={styles.btncolor} onPress={() => addTask(text)} />
+        <FlatList data={arrData} 
+        renderItem={({item}) => (
+             <Text> {item}</Text>
+        )} 
+        keyExtractor={item => item} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -89,18 +81,32 @@ const styles = StyleSheet.create({
     marginTop: 32,
     paddingHorizontal: 24,
   },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
   sectionTitle: {
-    fontSize: 24,
+    fontSize: 30,
+    paddingTop: 22,
     fontWeight: '600',
+    textAlign: 'center',
+    color: 'black',
   },
   sectionDescription: {
     marginTop: 8,
-    fontSize: 18,
+    fontSize: 30,
     fontWeight: '400',
+    color: 'black',
   },
   highlight: {
     fontWeight: '700',
   },
+  btncolor: {
+    paddingLeft: 20,
+    marginHorizontal:10,
+  }
 });
 
 export default App;
